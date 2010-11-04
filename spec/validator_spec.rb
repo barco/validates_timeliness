@@ -556,13 +556,13 @@ describe ValidatesTimeliness::Validator do
   describe "interpolation_values" do
     if defined?(I18n)
       it "should return hash of interpolation keys with restriction values" do
-        before = '1900-01-01'
+        before = '01/01/1900'
         configure_validator(:type => :date, :before => before)
         validator.send(:interpolation_values, :before, before.to_date).should == {:restriction => before}
       end
     else
       it "should return array of interpolation values" do
-        before = '1900-01-01'
+        before = '01/01/1900'
         configure_validator(:type => :date, :before => before)
         validator.send(:interpolation_values, :before, before.to_date).should == [before]
       end
@@ -597,13 +597,13 @@ describe ValidatesTimeliness::Validator do
       it "should format datetime value of restriction" do
         configure_validator(:type => :datetime, :after => 1.day.from_now)
         validate_with(:birth_date_and_time, Time.now)
-        person.errors.on(:birth_date_and_time).should match(/after \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\Z/)
+        person.errors.on(:birth_date_and_time).should match(/after \d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}\Z/)
       end
 
       it "should format date value of restriction" do
         configure_validator(:type => :date, :after => 1.day.from_now)
         validate_with(:birth_date, Time.now)
-        person.errors.on(:birth_date).should match(/after \d{4}-\d{2}-\d{2}\Z/)
+        person.errors.on(:birth_date).should match(/after \d{2}\/\d{2}\/\d{4}\Z/)
       end
 
       it "should format time value of restriction" do
@@ -620,7 +620,7 @@ describe ValidatesTimeliness::Validator do
             I18n.locale = :zz
             configure_validator(:type => :datetime, :after => 1.day.from_now)
             validate_with(:birth_date_and_time, Time.now)
-            person.errors.on(:birth_date_and_time).should match(/after \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\Z/)
+            person.errors.on(:birth_date_and_time).should match(/after \d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}\Z/)
           end
 
           after do
@@ -708,6 +708,6 @@ describe ValidatesTimeliness::Validator do
   def error_messages
     return @error_messages if defined?(@error_messages)
     messages = defined?(I18n) ? I18n.t('activerecord.errors.messages') : validator.send(:error_messages)
-    @error_messages = messages.inject({}) {|h, (k, v)| h[k] = v.sub(/ (\%s|\{\{\w*\}\}).*/, ''); h }
+    @error_messages = messages.inject({}) {|h, (k, v)| h[k] = v.sub(/ (\%\{|\{\{).*/, ''); h }
   end
 end

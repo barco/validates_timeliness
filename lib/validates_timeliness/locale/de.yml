@@ -1,0 +1,22 @@
+# German translation by frank@luithle.net
+# Artikel vor %{restriction} wurden aus grammatikalischen Gründen ausgelassen
+# (weil es sich sowohl um eine Uhrzeit als auch ein Datum handeln könnte, was
+# aber erst zur Laufzeit bekannt ist).
+de:
+  activerecord:
+    errors:
+      messages:
+        invalid_date: "ist kein gültiges Datum"
+        invalid_time: "ist keine gültige Uhrzeit"
+        invalid_datetime: "ist kein gültiger Zeitstempel"
+        is_at: "muss am %{restriction} sein"
+        before: "muss vor %{restriction} liegen"
+        on_or_before: "darf nicht nach %{restriction} liegen"
+        after: "muss nach %{restriction} liegen"
+        on_or_after: "darf nicht vor %{restriction} liegen"
+        between: "muss zwischen %{earliest} und %{latest} liegen"
+  validates_timeliness:
+    error_value_formats:
+      date: '%d.%m.%Y'
+      time: '%H:%M:%S'
+      datetime: '%d.%m.%Y %H:%M:%S'
