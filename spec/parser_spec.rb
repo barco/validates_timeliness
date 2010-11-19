@@ -25,8 +25,9 @@ describe ValidatesTimeliness::Parser do
     end
 
     it "should respect the time zone offset in ISO 8601 input" do
-      parse("2000-01-01T12:00:00+01:00", :datetime).utc.should ==
-        DateTime.parse("2000-01-01T11:00:00Z")
+      parsed = parse("2000-01-01T12:00:00+02:00", :datetime)
+      parsed.utc_offset.should == 7200
+      parsed.utc.should == DateTime.parse("2000-01-01T10:00:00Z")
     end
         
     if RAILS_VER >= '2.1'

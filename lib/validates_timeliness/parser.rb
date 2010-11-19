@@ -22,10 +22,18 @@ module ValidatesTimeliness
         return nil unless Date.valid_civil?(*time_array[0..2])
 
         # Store zone offset if present in argument
-        offset = (time_array.length > 7) ? time_array.pop : 0
+        zone_given = if time_array.length > 7
+                       time_array.pop
+                     else
+                       nil
+                     end
 
         result = if Time.respond_to?(:zone) && ValidatesTimeliness.use_time_zones
-          Time.zone.local(*time_array)
+          if zone_given
+            ActiveSupport::TimeZone[zone_given == 0 ? "UTC" : zone_given]
+          else
+            Time.zone
+          end.local(*time_array)
         else
           # Older AR way of handling times with datetime fallback
           begin
@@ -37,9 +45,6 @@ module ValidatesTimeliness
             DateTime.civil(*(time_array << zone_offset))
           end
         end
-
-        # Apply the time zone, if any, before returning
-        result.ago(offset)
       rescue ArgumentError, TypeError
         nil
       end
