@@ -51,6 +51,10 @@ ValidatesTimeliness.enable_datetime_select_extension!
 
 ActiveRecord::Migration.verbose = false
 ActiveRecord::Base.establish_connection({:adapter => 'sqlite3', :database => ':memory:'})
+module SimpleBackendNoDeprecationWarnings
+  def warn_syntax_deprecation!; end
+end
+I18n::Backend::Simple.send(:include, SimpleBackendNoDeprecationWarnings)
 
 require 'sqlite_patch' if RAILS_VER < '2.1'
 
